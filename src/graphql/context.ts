@@ -1,16 +1,14 @@
-import type * as express from "express";
+import type { ExpressContext } from "apollo-server-express";
 
-export type Context = {
+export interface Context {
     session: { [key: string]: any };
-};
+}
 
-export const context = async ({ req: { session } }: { req: express.Request }): Promise<Context> => {
-    if (!session) {
+export async function context({ req }: ExpressContext): Promise<Context> {
+    if (!req.session) {
         throw new Error(`session is disabled`);
     }
     return {
-        session,
+        session: req.session,
     };
-};
-
-export default context;
+}

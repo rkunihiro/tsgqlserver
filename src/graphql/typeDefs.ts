@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import gql from "graphql-tag";
 
 export const typeDefs = gql`
     type Query {
@@ -7,7 +7,7 @@ export const typeDefs = gql`
 
     type Mutation {
         incl(add: Int): Int!
-        decl(sum: Int): Int!
+        decl(sub: Int): Int!
     }
 
     type Schema {
@@ -15,5 +15,3 @@ export const typeDefs = gql`
         mutation: Mutation
     }
 `;
-
-export default typeDefs;

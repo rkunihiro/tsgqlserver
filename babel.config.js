@@ -10,13 +10,9 @@ module.exports = {
                     node: 12,
                 },
                 useBuiltIns: "usage",
-                corejs: 3,
+                corejs: { version: "3.16", proposals: true },
                 debug: true,
             },
         ],
-    ],
-    plugins: [
-        ["@babel/plugin-proposal-nullish-coalescing-operator"], //
-        ["@babel/plugin-proposal-optional-chaining"],
     ],
 };

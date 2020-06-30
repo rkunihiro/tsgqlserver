@@ -1,45 +1,55 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import gqlServer from "./gqlserver";
+export function createExpressServer(apolloMiddleware: express.Router) {
+    const app = express();
+    app.use(morgan("dev"));
+    app.use(
+        helmet({
+            contentSecurityPolicy: false,
+        }),
+    );
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(
+        session({
+            secret: "foobar",
+            cookie: {
+                path: "/",
+                httpOnly: true,
+                secure: false,
+                maxAge: 3600000,
+            },
+            name: "sid",
+            resave: false,
+            saveUninitialized: true,
+        }),
+    );
 
-const app = express();
-app.use(morgan("dev"));
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(
-    session({
-        secret: "foobar",
-        cookie: { path: "/", httpOnly: true, secure: false, maxAge: 3600000 },
-        name: "sid",
-        resave: false,
-        saveUninitialized: true,
-    }),
-);
-// health check endpoint
-app.get("/", async (_, res) => {
-    res.end(`OK`);
-});
-// GraphQL endpoint
-gqlServer.applyMiddleware({
-    app,
-    path: "/query",
-});
-// Not found
-app.all("*", (_, res) => {
-    res.status(404);
-    res.setHeader("Content-Type", "text/plain;charset=UTF-8");
-    res.end("not found");
-});
-// Error handler
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    console.error(err);
-    res.status(500);
-    res.setHeader("Content-Type", "text/plain;charset=UTF-8");
-    res.end("internal server error");
-});
+    // GraphQL server
+    app.use(apolloMiddleware);
 
-export default app;
+    // health check endpoint
+    app.get("/", async (_req: Request, res: Response) => {
+        res.end(`OK`);
+    });
+
+    // Not found
+    app.all("*", (_req: Request, res: Response) => {
+        res.status(404);
+        res.setHeader("Content-Type", "text/plain;charset=UTF-8");
+        res.end("not found");
+    });
+
+    // Error handler
+    app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+        console.error(err);
+        res.status(500);
+        res.setHeader("Content-Type", "text/plain;charset=UTF-8");
+        res.end("internal server error");
+    });
+
+    return app;
+}
