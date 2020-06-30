@@ -22,6 +22,7 @@
         "@types/helmet": "0.0.46",
         "@types/morgan": "^1.9.1",
         "@types/node": "^13.13.12",
+        "@types/terser-webpack-plugin": "^3.0.0",
         "@types/webpack": "^4.41.18",
         "@types/webpack-node-externals": "^1.7.1",
         "@typescript-eslint/eslint-plugin": "^2.34.0",

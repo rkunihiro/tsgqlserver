@@ -1,6 +1,6 @@
 module.exports = {
     presets: [
-        ["@babel/preset-typescript", {}],
+        "@babel/preset-typescript",
         [
             "@babel/preset-env",
             {
@@ -16,8 +16,7 @@ module.exports = {
         ],
     ],
     plugins: [
-        //
-        ["@babel/plugin-proposal-nullish-coalescing-operator"],
+        ["@babel/plugin-proposal-nullish-coalescing-operator"], //
         ["@babel/plugin-proposal-optional-chaining"],
     ],
 };
